@@ -58,18 +58,18 @@ Future<void> borrarVehiculo(String uid) async{
   await db.collection("vehiculo").doc(uid).delete();
 }
 
-Future<List> getBitacoras(String vehiculoId) async {
-  List bitacora = [];
-  QuerySnapshot queryBitacora = await db.collection('vehiculo').doc(vehiculoId).collection('bitacora').get();
-  for(var doc in queryBitacora.docs){
+Future<List<Map<String, dynamic>>> getBitacoras(String vehiculoId) async {
+  List<Map<String, dynamic>> bitacora = [];
+  QuerySnapshot queryBitacora = await FirebaseFirestore.instance.collection('vehiculo').doc(vehiculoId).collection('bitacora').get();
+  for (var doc in queryBitacora.docs) {
     final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     final bitacoraDoc = {
       "fecha": data['fecha'],
-      "evento":data['evento'],
-      "recursos":data['recursos'],
-      "verifico":data['verifico'],
-      "fechaverificacion":data['fechaverificacion'],
-      "uid":doc.id,
+      "evento": data['evento'],
+      "recursos": data['recursos'],
+      "verifico": data['verifico'],
+      "fechaverificacion": data['fechaverificacion'],
+      "uid": doc.id,
     };
     bitacora.add(bitacoraDoc);
   }

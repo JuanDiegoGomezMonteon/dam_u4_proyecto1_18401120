@@ -1,4 +1,5 @@
 import 'package:dam_u4_proyecto1_18401120/firebase_service.dart';
+import 'package:dam_u4_proyecto1_18401120/paginabita.dart';
 import 'package:flutter/material.dart';
 
 class Inicio extends StatefulWidget {
@@ -59,19 +60,57 @@ class _InicioState extends State<Inicio> {
                         leading: Icon(Icons.car_rental),
                         title: Text(snapshot.data?[index]["placa"]),
                         subtitle: Text(snapshot.data?[index]['trabajador'] ?? ''),
-                        onTap: () async {
-                          await Navigator.pushNamed(context,"/edit", arguments: {
-                            "combustible": snapshot.data?[index]['combustible'],
-                            "depto":snapshot.data?[index]['depto'],
-                            "numeroserie":snapshot.data?[index]['numeroserie'],
-                            "placa":snapshot.data?[index]['placa'],
-                            "resguardadopor":snapshot.data?[index]['resguardadopor'],
-                            "tanque":snapshot.data?[index]['tanque'],
-                            "tipo":snapshot.data?[index]['tipo'],
-                            "trabajador":snapshot.data?[index]['trabajador'],
-                            "uid":snapshot.data?[index]['uid'],
-                          } );
-                          setState(() {});
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('¿Qué desea hacer con el vehículo con placas ${snapshot.data?[index]['placa']}?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('Actualizar'),
+                                    onPressed: () async {
+                                      await Navigator.pushNamed(context,"/edit", arguments: {
+                                        "combustible": snapshot.data?[index]['combustible'],
+                                        "depto":snapshot.data?[index]['depto'],
+                                        "numeroserie":snapshot.data?[index]['numeroserie'],
+                                        "placa":snapshot.data?[index]['placa'],
+                                        "resguardadopor":snapshot.data?[index]['resguardadopor'],
+                                        "tanque":snapshot.data?[index]['tanque'],
+                                        "tipo":snapshot.data?[index]['tipo'],
+                                        "trabajador":snapshot.data?[index]['trabajador'],
+                                        "uid":snapshot.data?[index]['uid'],
+                                      } );
+                                      setState(() {});
+                                      setState(() {const Center(
+                                        child: CircularProgressIndicator(),
+                                      );});
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Bitacora'),
+                                    onPressed: () async{
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PaginaBitacoras(vehiculoId: snapshot.data?[index]['uid'] ?? ''),
+                                        )
+                                      );
+                                      setState(() {});
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Cancelar'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                     );
